@@ -1,6 +1,6 @@
-require '../_prepare'
+require './_prepare'
 
-spec ['utility/path'], (path) ->
+spec ['path'], (path) ->
 
 	test 'compare', ->
 

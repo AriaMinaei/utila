@@ -1,6 +1,6 @@
-require '../_prepare'
+require './_prepare'
 
-spec ['utility/object'], (object) ->
+spec ['object'], (object) ->
 
 	test 'isBareObject', ->
 

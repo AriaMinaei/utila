@@ -2,7 +2,7 @@
 amdefine = require('amdefine')(module)
 path = require 'path'
 
-pathToLib = path.resolve __dirname, '../../js/lib'
+pathToLib = path.resolve __dirname, '../lib'
 
 global.inspect = require('eyespect').inspector({pretty: yes})
 

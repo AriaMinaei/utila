@@ -19,36 +19,9 @@ task 'compile:coffee', ->
 			if error?
 
 				console.log 'Compile failed: ' + error
-				return
 
-task 'compile:jade', ->
-
-	unless fs.existsSync './demo/html'
-
-		fs.mkdirSync './demo/html'
-
-	exec 'node ./node_modules/jade/bin/jade ./demo/jade -Po ./demo/html',
-
-		(error) ->
-
-			# if fs.existsSync '-p'
-
-			# 	fs.rmdirSync '-p'
-
-			if error?
-
-				console.log 'Compile failed: ' + error
-				return
-
-task 'watch:jade', ->
-
-	unless fs.existsSync './demo/html'
-
-		fs.mkdirSync './demo/html'
-
-	exec 'start node ./node_modules/jade/bin/jade ./demo/jade -wPo ./demo/html'
+			return
 
 task 'build', ->
 
 	invoke 'compile:coffee'
-	invoke 'compile:jade'

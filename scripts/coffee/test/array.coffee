@@ -1,6 +1,6 @@
-require '../_prepare'
+require './_prepare'
 
-spec ['utility/array'], (array) ->
+spec ['array'], (array) ->
 
 	test 'from', ->
 

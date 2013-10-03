@@ -1,8 +1,8 @@
-if typeof define isnt 'function' then define = require('amdefine')(module)
+_common = require './_common'
 
-define ['./_common'], (common) -> object =
+module.exports = object =
 
-	isBareObject: common.isBareObject.bind common
+	isBareObject: _common.isBareObject.bind _common
 
 	###
 	if 'what' is an object, but an instance of some class,
@@ -14,14 +14,14 @@ define ['./_common'], (common) -> object =
 		not @isBareObject what
 
 	###
-	Alias to common.typeOf
+	Alias to _common.typeOf
 	###
-	typeOf: common.typeOf.bind common
+	typeOf: _common.typeOf.bind _common
 
 	###
-	Alias to common.clone
+	Alias to _common.clone
 	###
-	clone: common.clone.bind common
+	clone: _common.clone.bind _common
 
 	###
 	Empties an object of its properties.

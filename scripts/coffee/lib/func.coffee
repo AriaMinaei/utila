@@ -1,6 +1,4 @@
-if typeof define isnt 'function' then define = require('amdefine')(module)
-
-define
+module.exports =
 
 	throttle: (func, time = 1000) ->
 
