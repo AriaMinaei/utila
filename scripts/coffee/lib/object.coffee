@@ -86,13 +86,16 @@ module.exports = object =
 
 		@appendOnto @clone(onto), toAppend
 
+	# Appends props from `toAppend` to `onto`
+	# overrides all values, and iterates through objects to override
+	# deep.
 	appendOnto: (onto, toAppend) ->
 
 		return onto if not @isBareObject(toAppend) or not @isBareObject(onto)
 
-		for key, newVal of toAppend
+		for own key, newVal of toAppend
 
-			continue unless newVal isnt undefined and toAppend.hasOwnProperty key
+			continue unless newVal isnt undefined
 
 			if typeof newVal isnt 'object' or @isInstance newVal
 
@@ -111,6 +114,8 @@ module.exports = object =
 				else
 
 					@appendOnto oldVal, newVal
+
+		onto
 
 	groupProps: (obj, groups) ->
 
