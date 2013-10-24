@@ -5,9 +5,7 @@ module.exports = object =
 	isBareObject: _common.isBareObject.bind _common
 
 	###
-	if 'what' is an object, but an instance of some class,
-	like: what = new Question
-	object.isInstance what # yes
+	if object is an instance of a class
 	###
 	isInstance: (what) ->
 
@@ -35,7 +33,7 @@ module.exports = object =
 		o
 
 	###
-	Empties an o. Doesn't check for hasOwnProperty, so it's a tiny
+	Empties an object. Doesn't check for hasOwnProperty, so it's a tiny
 	bit faster. Use it for plain objects.
 	###
 	fastEmpty: (o) ->
@@ -45,53 +43,50 @@ module.exports = object =
 		o
 
 	###
-	if 'from' holds a set of default values,
-	the values in 'to' will be overriden onto them, as long as
-	they're not undefined.
+	Overrides values fomr `newValues` on `base`, as long as they
+	already exist in base.
 	###
-	overrideOnto: (onto, toOverride) ->
+	overrideOnto: (base, newValues) ->
 
-		return onto if not @isBareObject(toOverride) or not @isBareObject(onto)
+		return base if not @isBareObject(newValues) or not @isBareObject(base)
 
-		for key, oldVal of onto
+		for key, oldVal of base
 
-			newVal = toOverride[key]
+			newVal = newValues[key]
 
 			continue if newVal is undefined
 
 			if typeof newVal isnt 'object' or @isInstance newVal
 
-				onto[key] = @clone newVal
+				base[key] = @clone newVal
 
 			# newVal is a plain object
 			else
 
 				if typeof oldVal isnt 'object' or @isInstance oldVal
 
-					onto[key] = @clone newVal
+					base[key] = @clone newVal
 
 				else
 
 					@overrideOnto oldVal, newVal
-		onto
+		base
 
 	###
-	Takes a clone of 'from' and runs #overrideOnto on it
+	Takes a clone of 'base' and runs #overrideOnto on it
 	###
-	override: (onto, toOverride) ->
+	override: (base, newValues) ->
 
-		@overrideOnto @clone(onto), toOverride
+		@overrideOnto @clone(base), newValues
 
-	append: (onto, toAppend) ->
+	append: (base, toAppend) ->
 
-		@appendOnto @clone(onto), toAppend
+		@appendOnto @clone(base), toAppend
 
-	# Appends props from `toAppend` to `onto`
-	# overrides all values, and iterates through objects to override
-	# deep.
-	appendOnto: (onto, toAppend) ->
+	# Deep appends values from `toAppend` to `base`
+	appendOnto: (base, toAppend) ->
 
-		return onto if not @isBareObject(toAppend) or not @isBareObject(onto)
+		return base if not @isBareObject(toAppend) or not @isBareObject(base)
 
 		for own key, newVal of toAppend
 
@@ -99,24 +94,25 @@ module.exports = object =
 
 			if typeof newVal isnt 'object' or @isInstance newVal
 
-				onto[key] = newVal
+				base[key] = newVal
 
 			else
 
 				# newVal is a bare object
 
-				oldVal = onto[key]
+				oldVal = base[key]
 
 				if typeof oldVal isnt 'object' or @isInstance oldVal
 
-					onto[key] = @clone newVal
+					base[key] = @clone newVal
 
 				else
 
 					@appendOnto oldVal, newVal
 
-		onto
+		base
 
+	# Groups
 	groupProps: (obj, groups) ->
 
 		grouped = {}

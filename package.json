@@ -1,26 +1,27 @@
 {
   "name": "utila",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "notareplacementforunderscore",
-  "main": "./scripts/js/lib/utila.js",
+  "main": "scripts/js/lib/utila.js",
   "dependencies": {
-    "amdefine": "~0.0.8"
+    "little-popo": "~0.1.2",
+    "coffee-script": "~1.6.3"
   },
-  "devDependencies": {
-    "eyespect": "~0.1.10",
-    "chai": "~1.7.2",
-    "when": "~2.3.0"
-    },
+  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/coffee-script/bin/cake test",
+    "prepublish": "node ./node_modules/coffee-script/bin/cake build"
   },
-  "directories": {
-    "lib": "js"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AriaMinaei/utila.git"
   },
   "keywords": [
-    "utility",
-    "belt"
+    "utilities"
   ],
   "author": "Aria Minaei",
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AriaMinaei/utila/issues"
+  }
 }

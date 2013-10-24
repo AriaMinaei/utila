@@ -1,143 +1,143 @@
 require './_prepare'
 
-spec ['array'], (array) ->
+array = mod 'array'
 
-	test 'from', ->
+test 'from', ->
 
-		array.from([1]).should.be.an.instanceOf Array
-		array.from([1])[0].should.equal 1
+	array.from([1]).should.be.an.instanceOf Array
+	array.from([1])[0].should.equal 1
 
-	test 'clone', ->
+test 'clone', ->
 
-		a = [0, 1, 2]
+	a = [0, 1, 2]
 
-		b = array.clone a
+	b = array.clone a
 
-		b[0].should.equal 0
-		b[1].should.equal 1
+	b[0].should.equal 0
+	b[1].should.equal 1
 
-		b[0] = 3
+	b[0] = 3
 
-		a[0].should.equal 0
+	a[0].should.equal 0
 
-	test 'pluck', ->
+test 'pluck', ->
 
-		a = [0, 1, 2, 3]
+	a = [0, 1, 2, 3]
 
-		after = array.pluck a, 1
+	after = array.pluck a, 1
 
-		after.length.should.equal 3
+	after.length.should.equal 3
 
-		after[0].should.equal 0
-		after[1].should.equal 2
-		after[2].should.equal 3
-		after.should.equal a
+	after[0].should.equal 0
+	after[1].should.equal 2
+	after[2].should.equal 3
+	after.should.equal a
 
-	test 'pluckMultiple', ->
+test 'pluckMultiple', ->
 
-		a = [0, 1, 2, 3, 4, 5, 6]
+	a = [0, 1, 2, 3, 4, 5, 6]
 
-		array.pluckMultiple a, [0, 4, 2, 6]
+	array.pluckMultiple a, [0, 4, 2, 6]
 
-		a.length.should.equal 3
-		a[0].should.equal 1
-		a[1].should.equal 3
-		a[2].should.equal 5
+	a.length.should.equal 3
+	a[0].should.equal 1
+	a[1].should.equal 3
+	a[2].should.equal 5
 
-	test 'pluckItem', ->
+test 'pluckItem', ->
 
-		a = [0, 1, 2, 3, 2, 4, 2]
+	a = [0, 1, 2, 3, 2, 4, 2]
 
-		array.pluckItem a, 2
+	array.pluckItem a, 2
 
-		a[0].should.equal 0
-		a[1].should.equal 1
-		a[2].should.equal 3
-		a[3].should.equal 4
+	a[0].should.equal 0
+	a[1].should.equal 1
+	a[2].should.equal 3
+	a[3].should.equal 4
 
-		array.pluckItem([1], 2).length.should.equal 1
+	array.pluckItem([1], 2).length.should.equal 1
 
 
-	test 'pluckOneItem', ->
+test 'pluckOneItem', ->
 
-		a = [0, 1, 2, 3, 2, 4, 2]
+	a = [0, 1, 2, 3, 2, 4, 2]
 
-		array.pluckOneItem a, 2
+	array.pluckOneItem a, 2
 
-		a[0].should.equal 0
-		a[1].should.equal 1
-		a[2].should.equal 3
-		a[3].should.equal 2
-		a[4].should.equal 4
-		a[5].should.equal 2
+	a[0].should.equal 0
+	a[1].should.equal 1
+	a[2].should.equal 3
+	a[3].should.equal 2
+	a[4].should.equal 4
+	a[5].should.equal 2
 
-		a = [1, 2]
+	a = [1, 2]
 
-		array.pluckOneItem a, 1
+	array.pluckOneItem a, 1
 
-		a.length.should.equal 1
-		a[0].should.equal 2
+	a.length.should.equal 1
+	a[0].should.equal 2
 
-		array.pluckOneItem([], 1).length.should.equal 0
+	array.pluckOneItem([], 1).length.should.equal 0
 
-		array.pluckOneItem([1], 2).length.should.equal 1
+	array.pluckOneItem([1], 2).length.should.equal 1
 
-	test 'plcukByCallback', ->
+test 'plcukByCallback', ->
 
-		a = [0, 1, 2, 3]
+	a = [0, 1, 2, 3]
 
-		array.pluckByCallback a, (val, i) ->
+	array.pluckByCallback a, (val, i) ->
 
-			return yes if val is 2
+		return yes if val is 2
 
-			return no
+		return no
 
-		a[0].should.equal 0
-		a[1].should.equal 1
-		a[2].should.equal 3
+	a[0].should.equal 0
+	a[1].should.equal 1
+	a[2].should.equal 3
 
-	test 'injectByCallback', ->
+test 'injectByCallback', ->
 
-		shouldInject = (valA, valB, toInject) ->
+	shouldInject = (valA, valB, toInject) ->
 
-			unless valA?
+		unless valA?
 
-				return yes if toInject <= valB
-
-				return no
-
-			unless valB?
-
-				return yes if valA <= toInject
-
-				return no
-
-			return yes if valA <= toInject <= valB
+			return yes if toInject <= valB
 
 			return no
 
-		a = [0.5, 1, 2.5, 2.5, 2.75, 2.75, 3]
+		unless valB?
 
-		array.injectByCallback a, 0, shouldInject
+			return yes if valA <= toInject
 
-		a[0].should.equal 0
-		a[1].should.equal 0.5
-		a[7].should.equal 3
+			return no
 
-		a = [0.5, 1, 2.5, 2.5, 2.75, 2.75, 3]
+		return yes if valA <= toInject <= valB
 
-		array.injectByCallback a, 2.7, shouldInject
+		return no
 
-		a[0].should.equal 0.5
-		a[4].should.equal 2.7
-		a[5].should.equal 2.75
-		a[7].should.equal 3
+	a = [0.5, 1, 2.5, 2.5, 2.75, 2.75, 3]
 
-		a = [0.5, 1, 2.5, 2.5, 2.75, 2.75, 3]
+	array.injectByCallback a, 0, shouldInject
 
-		array.injectByCallback a, 3.2, shouldInject
+	a[0].should.equal 0
+	a[1].should.equal 0.5
+	a[7].should.equal 3
 
-		a[0].should.equal 0.5
-		a[4].should.equal 2.75
-		a[6].should.equal 3
-		a[7].should.equal 3.2
+	a = [0.5, 1, 2.5, 2.5, 2.75, 2.75, 3]
+
+	array.injectByCallback a, 2.7, shouldInject
+
+	a[0].should.equal 0.5
+	a[4].should.equal 2.7
+	a[5].should.equal 2.75
+	a[7].should.equal 3
+
+	a = [0.5, 1, 2.5, 2.5, 2.75, 2.75, 3]
+
+	array.injectByCallback a, 3.2, shouldInject
+
+	a[0].should.equal 0.5
+	a[4].should.equal 2.75
+	a[6].should.equal 3
+	a[7].should.equal 3.2

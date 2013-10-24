@@ -1,233 +1,233 @@
 require './_prepare'
 
-spec ['object'], (object) ->
+object = mod 'object'
 
-	test 'isBareObject', ->
+test 'isBareObject', ->
 
-		object.isBareObject('a').should.equal false
+	object.isBareObject('a').should.equal false
 
-		object.isBareObject({'a': 'a'}).should.equal true
+	object.isBareObject({'a': 'a'}).should.equal true
 
-	test 'typeOf', ->
+test 'typeOf', ->
 
-		object.typeOf('s').should.equal 'string'
-		object.typeOf(0).should.equal 'number'
-		object.typeOf(false).should.equal 'boolean'
-		object.typeOf({}).should.equal 'object'
-		object.typeOf(arguments).should.equal 'arguments'
-		object.typeOf([]).should.equal 'array'
+	object.typeOf('s').should.equal 'string'
+	object.typeOf(0).should.equal 'number'
+	object.typeOf(false).should.equal 'boolean'
+	object.typeOf({}).should.equal 'object'
+	object.typeOf(arguments).should.equal 'arguments'
+	object.typeOf([]).should.equal 'array'
 
-	test 'empty', ->
+test 'empty', ->
 
-		o =
+	o =
 
-			a: 1
-			b: 2
-
-
-		object.empty o
-
-		o.should.not.have.property 'a'
-		o.should.not.have.property 'b'
-
-	test 'fastEmpty', ->
-
-		o =
-			a: 1
-			b: 2
+		a: 1
+		b: 2
 
 
-		object.fastEmpty o
+	object.empty o
 
-		o.should.not.have.property 'a'
-		o.should.not.have.property 'b'
+	o.should.not.have.property 'a'
+	o.should.not.have.property 'b'
 
-	test 'clone', ->
+test 'fastEmpty', ->
 
-		object.clone([1])[0].should.equal 1
-		object.clone({a:1}).a.should.equal 1
+	o =
+		a: 1
+		b: 2
 
-		o = {a: 1}
 
-		object.clone(o).should.not.equal o
+	object.fastEmpty o
 
-	test 'clone [include prototype]', ->
+	o.should.not.have.property 'a'
+	o.should.not.have.property 'b'
 
-		class C
+test 'clone', ->
 
-			constructor: (@a) ->
+	object.clone([1])[0].should.equal 1
+	object.clone({a:1}).a.should.equal 1
 
-			sayA: -> @a + 'a'
+	o = {a: 1}
 
-		a = new C 'a'
+	object.clone(o).should.not.equal o
 
-		a.sayA().should.equal 'aa'
+test 'clone [include prototype]', ->
 
-		b = object.clone a, yes
+	class C
 
-		b.should.not.equal a
+		constructor: (@a) ->
 
-		b.constructor.should.equal C
+		sayA: -> @a + 'a'
 
-		b.a.should.equal 'a'
+	a = new C 'a'
 
-		b.a = 'a2'
+	a.sayA().should.equal 'aa'
 
-		b.sayA().should.equal 'a2a'
+	b = object.clone a, yes
 
-	test 'clone [without prototype]', ->
+	b.should.not.equal a
 
-		class C
+	b.constructor.should.equal C
 
-			constructor: (@a) ->
+	b.a.should.equal 'a'
 
-			sayA: -> @a + 'a'
+	b.a = 'a2'
 
-		a = new C 'a'
+	b.sayA().should.equal 'a2a'
 
-		a.sayA().should.equal 'aa'
+test 'clone [without prototype]', ->
 
-		b = object.clone a, no
+	class C
 
-		b.should.equal a
+		constructor: (@a) ->
 
-	test 'overrideOnto [basic]', ->
+		sayA: -> @a + 'a'
 
-		onto =
+	a = new C 'a'
+
+	a.sayA().should.equal 'aa'
+
+	b = object.clone a, no
+
+	b.should.equal a
+
+test 'overrideOnto [basic]', ->
+
+	onto =
+		a: 'a'
+		b:
+			c: 'c'
+			d:
+				e: 'e'
+
+	what =
+		a: 'a2'
+		b:
+			c: 'c2'
+			d:
+				f: 'f2'
+
+	object.overrideOnto onto, what
+
+	onto.a.should.equal 'a2'
+	onto.b.should.have.property 'c'
+	onto.b.c.should.equal 'c2'
+	onto.b.d.should.not.have.property 'f'
+	onto.b.d.e.should.equal 'e'
+
+test 'override', ->
+
+	onto =
+
+		a: 'a'
+
+		b:
+
+			c: 'c'
+
+			d:
+
+				e: 'e'
+
+	what =
+
+		a: 'a2'
+
+		b:
+
+			c: 'c2'
+
+			d:
+
+				f: 'f2'
+
+
+	onto2 = object.override onto, what
+
+	onto2.a.should.equal 'a2'
+	onto2.b.should.have.property 'c'
+	onto2.b.c.should.equal 'c2'
+	onto2.b.d.should.not.have.property 'f'
+	onto2.b.d.e.should.equal 'e'
+
+	onto.should.not.equal onto2
+
+do ->
+
+	what =
+
+		a: 'a2'
+
+		c: ->
+
+		z: 'z'
+
+		y:
+
 			a: 'a'
-			b:
-				c: 'c'
-				d:
-					e: 'e'
 
-		what =
-			a: 'a2'
-			b:
-				c: 'c2'
-				d:
-					f: 'f2'
+	onto =
 
-		object.overrideOnto onto, what
+		a: 'a'
+
+		b: 'b'
+
+	test 'appendOnto [basic]', ->
+
+		object.appendOnto onto, what
 
 		onto.a.should.equal 'a2'
-		onto.b.should.have.property 'c'
-		onto.b.c.should.equal 'c2'
-		onto.b.d.should.not.have.property 'f'
-		onto.b.d.e.should.equal 'e'
+		onto.b.should.equal 'b'
+		onto.z.should.equal 'z'
 
-	test 'override', ->
+	test "appendOnto [shallow copies instances]", ->
 
-		onto =
-
-			a: 'a'
-
-			b:
-
-				c: 'c'
-
-				d:
-
-					e: 'e'
-
-		what =
-
-			a: 'a2'
-
-			b:
-
-				c: 'c2'
-
-				d:
-
-					f: 'f2'
+		onto.c.should.be.instanceof Function
+		onto.c.should.equal what.c
 
 
-		onto2 = object.override onto, what
+	test "appendOnto [clones objects]", ->
 
-		onto2.a.should.equal 'a2'
-		onto2.b.should.have.property 'c'
-		onto2.b.c.should.equal 'c2'
-		onto2.b.d.should.not.have.property 'f'
-		onto2.b.d.e.should.equal 'e'
+		onto.should.have.property 'y'
+		onto.y.a.should.equal 'a'
+		onto.y.should.not.equal what.y
 
-		onto.should.not.equal onto2
+test 'groupProps', ->
 
-	do ->
+	obj =
 
-		what =
+		a1: '1'
+		a2: '2'
 
-			a: 'a2'
+		b1: '1'
+		b2: '2'
 
-			c: ->
+		c1: '1'
+		c2: '2'
 
-			z: 'z'
+		rest1: '1'
+		rest2: '2'
 
-			y:
+	groups = object.groupProps obj,
 
-				a: 'a'
+		a: ['a1', 'a2']
 
-		onto =
+		b: [/^b[0-9]+$/]
 
-			a: 'a'
+		c: (key) -> key[0] is 'c'
 
-			b: 'b'
+	groups.a.should.have.property 'a1'
+	groups.a.a1.should.equal '1'
 
-		test 'appendOnto [basic]', ->
+	groups.a.should.have.property 'a2'
 
-			object.appendOnto onto, what
+	groups.b.should.have.property 'b1'
+	groups.b.should.have.property 'b2'
 
-			onto.a.should.equal 'a2'
-			onto.b.should.equal 'b'
-			onto.z.should.equal 'z'
+	groups.c.should.have.property 'c1'
+	groups.c.should.have.property 'c2'
 
-		test "appendOnto [shallow copies instances]", ->
+	groups.rest.should.have.property 'rest1'
+	groups.rest.should.have.property 'rest1'
 
-			onto.c.should.be.instanceof Function
-			onto.c.should.equal what.c
-
-
-		test "appendOnto [clones objects]", ->
-
-			onto.should.have.property 'y'
-			onto.y.a.should.equal 'a'
-			onto.y.should.not.equal what.y
-
-	test 'groupProps', ->
-
-		obj =
-
-			a1: '1'
-			a2: '2'
-
-			b1: '1'
-			b2: '2'
-
-			c1: '1'
-			c2: '2'
-
-			rest1: '1'
-			rest2: '2'
-
-		groups = object.groupProps obj,
-
-			a: ['a1', 'a2']
-
-			b: [/^b[0-9]+$/]
-
-			c: (key) -> key[0] is 'c'
-
-		groups.a.should.have.property 'a1'
-		groups.a.a1.should.equal '1'
-
-		groups.a.should.have.property 'a2'
-
-		groups.b.should.have.property 'b1'
-		groups.b.should.have.property 'b2'
-
-		groups.c.should.have.property 'c1'
-		groups.c.should.have.property 'c2'
-
-		groups.rest.should.have.property 'rest1'
-		groups.rest.should.have.property 'rest1'
-
-		groups.rest.should.not.have.property 'c1'
+	groups.rest.should.not.have.property 'c1'
