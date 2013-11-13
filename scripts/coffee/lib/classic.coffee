@@ -1,93 +1,87 @@
-if typeof define isnt 'function' then define = require('amdefine')(module)
+module.exports = classic = {}
 
-define ->
+# Little helper for mixins from CoffeeScript FAQ,
+# courtesy of Sethaurus (http://github.com/sethaurus)
+classic.implement = (mixins..., classReference) ->
 
-	classic = {}
-
-	# Little helper for mixins from CoffeeScript FAQ,
-	# courtesy of Sethaurus (http://github.com/sethaurus)
-	classic.implement = (mixins..., classReference) ->
-
-		for mixin in mixins
-
-			classProto = classReference::
-
-			for member of mixin::
-
-				unless Object.getOwnPropertyDescriptor classProto, member
-
-					desc = Object.getOwnPropertyDescriptor mixin::, member
-
-					Object.defineProperty classProto, member, desc
-
-		classReference
-
-	classic.mix = (mixins..., classReference) ->
+	for mixin in mixins
 
 		classProto = classReference::
 
-		classReference.__mixinCloners = []
+		for member of mixin::
 
-		classReference.__applyClonersFor = (instance, args = null) ->
+			unless Object.getOwnPropertyDescriptor classProto, member
 
-			for cloner in classReference.__mixinCloners
+				desc = Object.getOwnPropertyDescriptor mixin::, member
 
-				cloner.apply instance, args
+				Object.defineProperty classProto, member, desc
 
-			return
+	classReference
 
-		classReference.__mixinInitializers = []
+classic.mix = (mixins..., classReference) ->
 
-		classReference.__initMixinsFor = (instance, args = null) ->
+	classProto = classReference::
 
-			for initializer in classReference.__mixinInitializers
+	classReference.__mixinCloners = []
 
-				initializer.apply instance, args
+	classReference.__applyClonersFor = (instance, args = null) ->
 
-			return
+		for cloner in classReference.__mixinCloners
 
-		classReference.__mixinQuitters = []
+			cloner.apply instance, args
 
-		classReference.__applyQuittersFor = (instance, args = null) ->
+		return
 
-			for quitter in classReference.__mixinQuitters
+	classReference.__mixinInitializers = []
 
-				quitter.apply instance, args
+	classReference.__initMixinsFor = (instance, args = null) ->
 
-			return
+		for initializer in classReference.__mixinInitializers
 
-		for mixin in mixins
+			initializer.apply instance, args
 
-			unless mixin.constructor instanceof Function
+		return
 
-				throw Error "Mixin should be a function"
+	classReference.__mixinQuitters = []
 
-			for member of mixin::
+	classReference.__applyQuittersFor = (instance, args = null) ->
 
-				if member.substr(0, 11) is '__initMixin'
+		for quitter in classReference.__mixinQuitters
 
-					classReference.__mixinInitializers.push mixin::[member]
+			quitter.apply instance, args
 
-					continue
+		return
 
-				else if member.substr(0, 11) is '__clonerFor'
+	for mixin in mixins
 
-					classReference.__mixinCloners.push mixin::[member]
+		unless mixin.constructor instanceof Function
 
-					continue
+			throw Error "Mixin should be a function"
 
-				else if member.substr(0, 12) is '__quitterFor'
+		for member of mixin::
 
-					classReference.__mixinQuitters.push mixin::[member]
+			if member.substr(0, 11) is '__initMixin'
 
-					continue
+				classReference.__mixinInitializers.push mixin::[member]
 
-				unless Object.getOwnPropertyDescriptor classProto, member
+				continue
 
-					desc = Object.getOwnPropertyDescriptor mixin::, member
+			else if member.substr(0, 11) is '__clonerFor'
 
-					Object.defineProperty classProto, member, desc
+				classReference.__mixinCloners.push mixin::[member]
 
-		classReference
+				continue
 
-	classic
+			else if member.substr(0, 12) is '__quitterFor'
+
+				classReference.__mixinQuitters.push mixin::[member]
+
+				continue
+
+			unless Object.getOwnPropertyDescriptor classProto, member
+
+				desc = Object.getOwnPropertyDescriptor mixin::, member
+
+				Object.defineProperty classProto, member, desc
+
+	classReference

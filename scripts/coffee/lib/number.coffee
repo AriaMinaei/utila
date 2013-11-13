@@ -1,11 +1,7 @@
-if typeof define isnt 'function' then define = require('amdefine')(module)
+module.exports = number =
 
-define ->
+	isInt: (n) ->
 
-	number =
+		return typeof n is 'number' and
 
-		isInt: (n) ->
-
-			return typeof n is 'number' and
-
-				parseFloat(n) is parseInt(n, 10) and not isNaN(n)
+			parseFloat(n) is parseInt(n, 10) and not isNaN(n)

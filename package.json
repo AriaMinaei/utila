@@ -1,11 +1,8 @@
 {
   "name": "utila",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "notareplacementforunderscore",
   "main": "scripts/js/lib/utila.js",
-  "dependencies": {
-    "amdefine": "~0.1.0"
-  },
   "devDependencies": {
     "coffee-script": "~1.6.3",
     "little-popo": "~0.1.2"

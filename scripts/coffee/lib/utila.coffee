@@ -1,21 +1,17 @@
-if typeof define isnt 'function' then define = require('amdefine')(module)
+array = require './array'
+classic = require './classic'
+func = require './func'
+Hash = require './Hash'
+number = require './number'
+object = require './object'
+path = require './path'
 
-define [
-	'./array'
-	'./classic'
-	'./func'
-	'./Hash'
-	'./number'
-	'./object'
-	'./path'
-], (array, classic, func, Hash, number, object, path) ->
+module.exports = utila =
 
-	utila =
-
-		array: array
-		classic: classic
-		func: func
-		Hash: Hash
-		number: number
-		object: object
-		path: path
+	array: array
+	classic: classic
+	func: func
+	Hash: Hash
+	number: number
+	object: object
+	path: path
