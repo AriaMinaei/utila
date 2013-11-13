@@ -1,79 +1,81 @@
-path = require 'path'
+if typeof define isnt 'function' then define = require('amdefine')(module)
 
-module.exports = pathTools =
+define ['path'], (path) ->
 
-	compare: (a, b) ->
+	pathTools =
 
-		aComps = @_getComponents a
-		bComps = @_getComponents b
+		compare: (a, b) ->
 
-		ancestorPath = []
-		a2Ancestor = []
-		b2Ancestor = []
-		ancestor2A = []
-		ancestor2B = []
+			aComps = @_getComponents a
+			bComps = @_getComponents b
 
-		for part, i in aComps
+			ancestorPath = []
+			a2Ancestor = []
+			b2Ancestor = []
+			ancestor2A = []
+			ancestor2B = []
 
-			break if part isnt bComps[i]
+			for part, i in aComps
 
-			ancestorPath.push part
+				break if part isnt bComps[i]
 
-		for i in [ancestorPath.length..aComps.length - 1]
+				ancestorPath.push part
 
-			if i < aComps.length - 1
+			for i in [ancestorPath.length..aComps.length - 1]
 
-				a2Ancestor.push '..'
+				if i < aComps.length - 1
 
-			ancestor2A.push aComps[i]
+					a2Ancestor.push '..'
 
-		for i in [ancestorPath.length..bComps.length - 1]
+				ancestor2A.push aComps[i]
 
-			if i < bComps.length - 1
+			for i in [ancestorPath.length..bComps.length - 1]
 
-				b2Ancestor.push '..'
+				if i < bComps.length - 1
 
-			ancestor2B.push bComps[i]
+					b2Ancestor.push '..'
 
-		ret =
+				ancestor2B.push bComps[i]
 
-			commonAncestor: @_fromArray ancestorPath
+			ret =
 
-			a2Ancestor: @_fromArray a2Ancestor
-			b2Ancestor: @_fromArray b2Ancestor
-			ancestor2A: @_fromArray ancestor2A
-			ancestor2B: @_fromArray ancestor2B
+				commonAncestor: @_fromArray ancestorPath
 
-	_getComponents: (p) ->
+				a2Ancestor: @_fromArray a2Ancestor
+				b2Ancestor: @_fromArray b2Ancestor
+				ancestor2A: @_fromArray ancestor2A
+				ancestor2B: @_fromArray ancestor2B
 
-		p = p.split('\\').join('/').split('/')
+		_getComponents: (p) ->
 
-	_getCommonAncestor: (a, b) ->
+			p = p.split('\\').join('/').split('/')
 
-		soFar = []
+		_getCommonAncestor: (a, b) ->
 
-		for part, i in a
+			soFar = []
 
-			if part is b[i]
+			for part, i in a
 
-				soFar.push part
+				if part is b[i]
 
-			else
+					soFar.push part
 
-				break
+				else
 
-		soFar
+					break
 
-	_fromArray: (a) ->
+			soFar
 
-		a.join '/'
+		_fromArray: (a) ->
 
-	slashesOnly: (p) ->
+			a.join '/'
 
-		p.split('\\').join('/')
+		slashesOnly: (p) ->
 
-	replaceExtension: (file, newExt) ->
+			p.split('\\').join('/')
 
-		ext = path.extname file
+		replaceExtension: (file, newExt) ->
 
-		return file.substr(0, file.length - ext.length) + '.' + newExt
+			ext = path.extname file
+
+			return file.substr(0, file.length - ext.length) + '.' + newExt

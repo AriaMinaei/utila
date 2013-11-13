@@ -1,103 +1,105 @@
-array = require './array'
+if typeof define isnt 'function' then define = require('amdefine')(module)
 
-module.exports = class Hash
+define ['./array'], (array) ->
 
-	constructor: ->
+	class Hash
 
-		# Knows which index is this name stored in
-		@_indexes = {}
+		constructor: ->
 
-		# The simple key/value pair
-		@_pairs = {}
+			# Knows which index is this name stored in
+			@_indexes = {}
 
-		# The plain array that holds all the values
-		@array = []
+			# The simple key/value pair
+			@_pairs = {}
 
-		# Number of elements
-		@_len = 0
+			# The plain array that holds all the values
+			@array = []
 
-	getIndexOf: (name) ->
+			# Number of elements
+			@_len = 0
 
-		@_indexes[name]
+		getIndexOf: (name) ->
 
-	set: (name, value) ->
+			@_indexes[name]
 
-		if @_indexes[name] is undefined
+		set: (name, value) ->
 
-			@_pairs[name] = value
-			@array.push value
+			if @_indexes[name] is undefined
 
-			index = @array.length - 1
+				@_pairs[name] = value
+				@array.push value
 
-			@_indexes[name] = index
+				index = @array.length - 1
 
-			@_len++
+				@_indexes[name] = index
 
-		else
+				@_len++
 
-			@_pairs[name] = value
+			else
 
-			@array[@_indexes[name]] = value
+				@_pairs[name] = value
+
+				@array[@_indexes[name]] = value
 
 
-		@
+			@
 
-	get: (name) ->
+		get: (name) ->
 
-		@_pairs[name]
+			@_pairs[name]
 
-	has: (name) ->
+		has: (name) ->
 
-		typeof @_pairs[name] isnt 'undefined'
+			typeof @_pairs[name] isnt 'undefined'
 
-	each: (func, i = null, ascending = yes) ->
+		each: (func, i = null, ascending = yes) ->
 
-		if ascending
+			if ascending
 
-			i ?= 0
+				i ?= 0
 
-			loop
+				loop
 
-				break if i >= @_len
+					break if i >= @_len
 
-				func @array[i], i
+					func @array[i], i
 
-				i++
+					i++
 
-		else
+			else
 
-			i ?= @array.length - 1
+				i ?= @array.length - 1
 
-			loop
+				loop
 
-				break if i < 0
+					break if i < 0
 
-				func @array[i], i
+					func @array[i], i
 
-				i--
+					i--
 
-		null
+			null
 
-	remove: (name) ->
+		remove: (name) ->
 
-		return @ if @_indexes[name] is undefined
+			return @ if @_indexes[name] is undefined
 
-		@_len--
+			@_len--
 
-		@_pairs[name] = undefined
+			@_pairs[name] = undefined
 
-		index = @_indexes[name]
+			index = @_indexes[name]
 
-		array.pluck @array, index
+			array.pluck @array, index
 
-		@_indexes[name] = undefined
+			@_indexes[name] = undefined
 
-		for name, value of @_indexes
+			for name, value of @_indexes
 
-			continue if value is undefined
+				continue if value is undefined
 
-			if value > index
+				if value > index
 
-				@_indexes[name] = value - 1
+					@_indexes[name] = value - 1
 
-		@
+			@

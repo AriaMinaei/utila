@@ -1,186 +1,188 @@
-_common = require './_common'
+if typeof define isnt 'function' then define = require('amdefine')(module)
 
-module.exports =
+define ['./_common'], (_common) ->
 
-	_clone: _common._cloneArray.bind _common
+	array =
 
-	clone: (what) ->
+		_clone: _common._cloneArray.bind _common
 
-		throw Error("`what` isn\'t an array.") unless Array.isArray what
+		clone: (what) ->
 
-		@_clone.apply @, arguments
+			throw Error("`what` isn\'t an array.") unless Array.isArray what
 
-	###
-	Tries to turn anything into an array.
-	###
-	from: (r) ->
+			@_clone.apply @, arguments
 
-		Array::slice.call r
+		###
+		Tries to turn anything into an array.
+		###
+		from: (r) ->
 
-	###
-	Clone of an array. Properties will be shallow copies.
-	###
-	simpleClone: (a) ->
+			Array::slice.call r
 
-		a.slice 0
+		###
+		Clone of an array. Properties will be shallow copies.
+		###
+		simpleClone: (a) ->
 
-	pluck: (a, i) ->
+			a.slice 0
 
-		return a if a.length < 1
+		pluck: (a, i) ->
 
-
-		for value, index in a
-
-			if index > i
-
-				a[index - 1] = a[index]
-
-		a.length = a.length - 1
-
-		a
-
-	pluckItem: (a, item) ->
-
-		return a if a.length < 1
+			return a if a.length < 1
 
 
-		removed = 0
+			for value, index in a
 
-		for value, index in a
+				if index > i
 
-			if value is item
+					a[index - 1] = a[index]
 
-				removed++
+			a.length = a.length - 1
 
-				continue
+			a
 
-			if removed isnt 0
+		pluckItem: (a, item) ->
 
-				a[index - removed] = a[index]
+			return a if a.length < 1
 
-		a.length = a.length - removed if removed > 0
 
-		a
+			removed = 0
 
-	pluckOneItem: (a, item) ->
-
-		return a if a.length < 1
-
-		reached = no
-
-		for value, index in a
-
-			if not reached
+			for value, index in a
 
 				if value is item
 
-					reached = yes
+					removed++
 
 					continue
 
-			else
+				if removed isnt 0
 
-				a[index - 1] = a[index]
+					a[index - removed] = a[index]
 
-		a.length = a.length - 1 if reached
+			a.length = a.length - removed if removed > 0
 
-		a
+			a
 
-	pluckByCallback: (a, cb) ->
+		pluckOneItem: (a, item) ->
 
-		return a if a.length < 1
+			return a if a.length < 1
 
-		removed = 0
+			reached = no
 
-		for value, index in a
+			for value, index in a
 
-			if cb value, index
+				if not reached
 
-				removed++
+					if value is item
 
-				continue
+						reached = yes
 
-			if removed isnt 0
+						continue
 
-				a[index - removed] = a[index]
+				else
 
-		if removed > 0
+					a[index - 1] = a[index]
 
-			a.length = a.length - removed
+			a.length = a.length - 1 if reached
 
-		a
+			a
 
-	pluckMultiple: (array, indexesToRemove) ->
+		pluckByCallback: (a, cb) ->
 
-		return array if array.length < 1
+			return a if a.length < 1
 
-		removedSoFar = 0
+			removed = 0
 
-		indexesToRemove.sort()
+			for value, index in a
 
-		for i in indexesToRemove
+				if cb value, index
 
-			@pluck array, i - removedSoFar
+					removed++
 
-			removedSoFar++
+					continue
 
-		array
+				if removed isnt 0
 
-	injectByCallback: (a, toInject, shouldInject) ->
+					a[index - removed] = a[index]
 
-		valA = null
+			if removed > 0
 
-		valB = null
+				a.length = a.length - removed
 
-		len = a.length
+			a
 
-		if len < 1
+		pluckMultiple: (array, indexesToRemove) ->
+
+			return array if array.length < 1
+
+			removedSoFar = 0
+
+			indexesToRemove.sort()
+
+			for i in indexesToRemove
+
+				@pluck array, i - removedSoFar
+
+				removedSoFar++
+
+			array
+
+		injectByCallback: (a, toInject, shouldInject) ->
+
+			valA = null
+
+			valB = null
+
+			len = a.length
+
+			if len < 1
+
+				a.push toInject
+
+				return a
+
+
+			for val, i in a
+
+				valA = valB
+
+				valB = val
+
+				if shouldInject valA, valB, toInject
+
+					return a.splice i, 0, toInject
 
 			a.push toInject
 
-			return a
+			a
 
+		injectInIndex: (a, index, toInject) ->
 
-		for val, i in a
+			len = a.length
 
-			valA = valB
+			i = index
 
-			valB = val
+			if len < 1
 
-			if shouldInject valA, valB, toInject
+				a.push toInject
 
-				return a.splice i, 0, toInject
+				return a
 
-		a.push toInject
+			toPut = toInject
 
-		a
+			toPutNext = null
 
-	injectInIndex: (a, index, toInject) ->
+			`for(; i <= len; i++){
 
-		len = a.length
+				toPutNext = a[i];
 
-		i = index
+				a[i] = toPut;
 
-		if len < 1
+				toPut = toPutNext;
 
-			a.push toInject
+			}`
 
-			return a
+			# a[i] = toPut
 
-		toPut = toInject
-
-		toPutNext = null
-
-		`for(; i <= len; i++){
-
-			toPutNext = a[i];
-
-			a[i] = toPut;
-
-			toPut = toPutNext;
-
-		}`
-
-		# a[i] = toPut
-
-		null
+			null

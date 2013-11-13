@@ -1,0 +1,21 @@
+{
+  "name": "utila",
+  "version": "0.1.3",
+  "homepage": "https://github.com/AriaMinaei/utila",
+  "authors": [
+    "Aria <aria.minaei@gmail.com>"
+  ],
+  "description": "notareplacementforunderscore",
+  "main": "scripts/js/lib/utila.js",
+  "keywords": [
+    "utility"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

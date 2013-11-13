@@ -1,17 +1,21 @@
-module.exports =
+if typeof define isnt 'function' then define = require('amdefine')(module)
 
-	throttle: (func, time = 1000) ->
+define ->
 
-		lastCalled = 0
+	func =
 
-		return ->
+		throttle: (func, time = 1000) ->
 
-			now = Date.now()
+			lastCalled = 0
 
-			if now - lastCalled < time
+			return ->
 
-				return
+				now = Date.now()
 
-			lastCalled = now
+				if now - lastCalled < time
 
-			func.apply null, arguments
+					return
+
+				lastCalled = now
+
+				func.apply null, arguments

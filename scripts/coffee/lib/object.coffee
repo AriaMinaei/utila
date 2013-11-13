@@ -1,170 +1,172 @@
-_common = require './_common'
+if typeof define isnt 'function' then define = require('amdefine')(module)
 
-module.exports = object =
+define ['./_common'], (_common) ->
 
-	isBareObject: _common.isBareObject.bind _common
+	object =
 
-	###
-	if object is an instance of a class
-	###
-	isInstance: (what) ->
+		isBareObject: _common.isBareObject.bind _common
 
-		not @isBareObject what
+		###
+		if object is an instance of a class
+		###
+		isInstance: (what) ->
 
-	###
-	Alias to _common.typeOf
-	###
-	typeOf: _common.typeOf.bind _common
+			not @isBareObject what
 
-	###
-	Alias to _common.clone
-	###
-	clone: _common.clone.bind _common
+		###
+		Alias to _common.typeOf
+		###
+		typeOf: _common.typeOf.bind _common
 
-	###
-	Empties an object of its properties.
-	###
-	empty: (o) ->
+		###
+		Alias to _common.clone
+		###
+		clone: _common.clone.bind _common
 
-		for prop of o
+		###
+		Empties an object of its properties.
+		###
+		empty: (o) ->
 
-			delete o[prop] if o.hasOwnProperty prop
+			for prop of o
 
-		o
+				delete o[prop] if o.hasOwnProperty prop
 
-	###
-	Empties an object. Doesn't check for hasOwnProperty, so it's a tiny
-	bit faster. Use it for plain objects.
-	###
-	fastEmpty: (o) ->
+			o
 
-		delete o[property] for property of o
+		###
+		Empties an object. Doesn't check for hasOwnProperty, so it's a tiny
+		bit faster. Use it for plain objects.
+		###
+		fastEmpty: (o) ->
 
-		o
+			delete o[property] for property of o
 
-	###
-	Overrides values fomr `newValues` on `base`, as long as they
-	already exist in base.
-	###
-	overrideOnto: (base, newValues) ->
+			o
 
-		return base if not @isBareObject(newValues) or not @isBareObject(base)
+		###
+		Overrides values fomr `newValues` on `base`, as long as they
+		already exist in base.
+		###
+		overrideOnto: (base, newValues) ->
 
-		for key, oldVal of base
+			return base if not @isBareObject(newValues) or not @isBareObject(base)
 
-			newVal = newValues[key]
+			for key, oldVal of base
 
-			continue if newVal is undefined
+				newVal = newValues[key]
 
-			if typeof newVal isnt 'object' or @isInstance newVal
+				continue if newVal is undefined
 
-				base[key] = @clone newVal
-
-			# newVal is a plain object
-			else
-
-				if typeof oldVal isnt 'object' or @isInstance oldVal
+				if typeof newVal isnt 'object' or @isInstance newVal
 
 					base[key] = @clone newVal
 
+				# newVal is a plain object
 				else
 
-					@overrideOnto oldVal, newVal
-		base
+					if typeof oldVal isnt 'object' or @isInstance oldVal
 
-	###
-	Takes a clone of 'base' and runs #overrideOnto on it
-	###
-	override: (base, newValues) ->
-
-		@overrideOnto @clone(base), newValues
-
-	append: (base, toAppend) ->
-
-		@appendOnto @clone(base), toAppend
-
-	# Deep appends values from `toAppend` to `base`
-	appendOnto: (base, toAppend) ->
-
-		return base if not @isBareObject(toAppend) or not @isBareObject(base)
-
-		for own key, newVal of toAppend
-
-			continue unless newVal isnt undefined
-
-			if typeof newVal isnt 'object' or @isInstance newVal
-
-				base[key] = newVal
-
-			else
-
-				# newVal is a bare object
-
-				oldVal = base[key]
-
-				if typeof oldVal isnt 'object' or @isInstance oldVal
-
-					base[key] = @clone newVal
-
-				else
-
-					@appendOnto oldVal, newVal
-
-		base
-
-	# Groups
-	groupProps: (obj, groups) ->
-
-		grouped = {}
-
-		for name, defs of groups
-
-			grouped[name] = {}
-
-		grouped['rest'] = {}
-
-		`top: //`
-		for key, val of obj
-
-			shouldAdd = no
-
-			for name, defs of groups
-
-				unless Array.isArray defs
-
-					defs = [defs]
-
-				for def in defs
-
-					if typeof def is 'string'
-
-						if key is def
-
-							shouldAdd = yes
-
-					else if def instanceof RegExp
-
-						if def.test key
-
-							shouldAdd = yes
-
-					else if def instanceof Function
-
-						if def key
-
-							shouldAdd = yes
+						base[key] = @clone newVal
 
 					else
 
-						throw Error 'Group definitions must either
-						be strings, regexes, or functions.'
+						@overrideOnto oldVal, newVal
+			base
 
-					if shouldAdd
+		###
+		Takes a clone of 'base' and runs #overrideOnto on it
+		###
+		override: (base, newValues) ->
 
-						grouped[name][key] = val
+			@overrideOnto @clone(base), newValues
 
-						`continue top`
+		append: (base, toAppend) ->
 
-			grouped['rest'][key] = val
+			@appendOnto @clone(base), toAppend
 
-		grouped
+		# Deep appends values from `toAppend` to `base`
+		appendOnto: (base, toAppend) ->
+
+			return base if not @isBareObject(toAppend) or not @isBareObject(base)
+
+			for own key, newVal of toAppend
+
+				continue unless newVal isnt undefined
+
+				if typeof newVal isnt 'object' or @isInstance newVal
+
+					base[key] = newVal
+
+				else
+
+					# newVal is a bare object
+
+					oldVal = base[key]
+
+					if typeof oldVal isnt 'object' or @isInstance oldVal
+
+						base[key] = @clone newVal
+
+					else
+
+						@appendOnto oldVal, newVal
+
+			base
+
+		# Groups
+		groupProps: (obj, groups) ->
+
+			grouped = {}
+
+			for name, defs of groups
+
+				grouped[name] = {}
+
+			grouped['rest'] = {}
+
+			`top: //`
+			for key, val of obj
+
+				shouldAdd = no
+
+				for name, defs of groups
+
+					unless Array.isArray defs
+
+						defs = [defs]
+
+					for def in defs
+
+						if typeof def is 'string'
+
+							if key is def
+
+								shouldAdd = yes
+
+						else if def instanceof RegExp
+
+							if def.test key
+
+								shouldAdd = yes
+
+						else if def instanceof Function
+
+							if def key
+
+								shouldAdd = yes
+
+						else
+
+							throw Error 'Group definitions must either
+							be strings, regexes, or functions.'
+
+						if shouldAdd
+
+							grouped[name][key] = val
+
+							`continue top`
+
+				grouped['rest'][key] = val
+
+			grouped
