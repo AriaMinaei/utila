@@ -1,14 +1,4 @@
-_common = require './_common'
-
 module.exports = array =
-
-	_clone: _common._cloneArray.bind _common
-
-	clone: (what) ->
-
-		throw Error("`what` isn\'t an array.") unless Array.isArray what
-
-		@_clone.apply @, arguments
 
 	###
 	Tries to turn anything into an array.

@@ -1,6 +1,6 @@
 {
   "name": "utila",
-  "version": "0.2.0",
+  "version": "0.3.0-beta1",
   "description": "notareplacementforunderscore",
   "main": "scripts/js/lib/utila.js",
   "devDependencies": {
@@ -22,5 +22,6 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/AriaMinaei/utila/issues"
-  }
+  },
+  "dependencies": {}
 }
