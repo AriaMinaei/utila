@@ -1,11 +1,11 @@
 {
   "name": "utila",
-  "version": "0.3.0-beta1",
+  "version": "0.3.0",
   "description": "notareplacementforunderscore",
   "main": "scripts/js/lib/utila.js",
   "devDependencies": {
     "coffee-script": "~1.6.3",
-    "little-popo": "~0.1.2"
+    "little-popo": "~0.1"
   },
   "scripts": {
     "test": "node ./node_modules/coffee-script/bin/cake test",
