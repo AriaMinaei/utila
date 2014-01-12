@@ -14,6 +14,16 @@ module.exports = array =
 
 		a.slice 0
 
+	shallowEqual: (a1, a2) ->
+
+		return no unless Array.isArray(a1) and Array.isArray(a2) and a1.length is a2.length
+
+		for val, i in a1
+
+			return no unless a2[i] is val
+
+		yes
+
 	pluck: (a, i) ->
 
 		return a if a.length < 1
