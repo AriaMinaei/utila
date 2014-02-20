@@ -4,3 +4,4 @@ module.exports = utila =
 	classic: require './classic'
 	object: require './object'
 	string: require './string'
+	Emitter: require './Emitter'
