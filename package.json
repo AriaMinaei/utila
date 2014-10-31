@@ -5,10 +5,12 @@
   "main": "lib/utila.js",
   "devDependencies": {
     "coffee-script": "~1.6.3",
-    "little-popo": "~0.1"
+    "little-popo": "~0.1",
+    "jitter": "^1.3.0"
   },
   "scripts": {
-    "prepublish": "coffee --bare --compile --output ./lib ./src"
+    "prepublish": "coffee --bare --compile --output ./lib ./src",
+    "watch": "jitter src lib -b"
   },
   "repository": {
     "type": "git",
